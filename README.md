@@ -225,8 +225,8 @@ MIT
 
 ## 联系方式
 
-- 项目主页：https://github.com/your-org/qilu-story
-- 问题反馈：https://github.com/your-org/qilu-story/issues
+- 项目主页：https://github.com/547dsj/qilu-story
+- 问题反馈：https://github.com/547dsj/qilu-story/issues
 
 ---
 
