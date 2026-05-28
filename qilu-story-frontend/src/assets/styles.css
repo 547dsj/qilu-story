@@ -1,0 +1,117 @@
+:root {
+  color-scheme: light;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  background-color: #fbf1e6;
+  color: #3e2f22;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #fff9f0 0%, #f4d8c1 40%, #e8c7b0 100%);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.panel {
+  width: min(560px, 100%);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 60px rgba(97, 61, 26, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.panel-title {
+  margin: 0 0 16px;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+  color: #4f3827;
+}
+
+.text-warm {
+  color: #6f513f;
+}
+
+.el-card__body {
+  padding: 24px;
+}
+
+.el-form-item__label {
+  color: #6f513f;
+}
+
+.el-input__inner,
+.el-textarea__inner {
+  border-radius: 14px;
+}
+
+.el-button--primary {
+  background: linear-gradient(135deg, #d89967 0%, #b56f42 100%);
+  border-color: transparent;
+}
+
+.el-button--primary:hover {
+  background: linear-gradient(135deg, #c87f51 0%, #9f5c34 100%);
+}
+
+.el-button--default {
+  background: rgba(230, 200, 170, 0.14);
+  color: #725435;
+  border-color: transparent;
+}
+
+.el-button.is-disabled {
+  opacity: 0.72;
+}
+
+.el-card {
+  border-radius: 24px;
+}
+
+.story-content {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.story-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.story-footer .el-button {
+  min-width: 136px;
+}
+
+.story-status {
+  margin-top: 20px;
+  color: #8a664f;
+  text-align: center;
+}
+
+.el-alert {
+  border-radius: 16px;
+}

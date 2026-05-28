@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: qilu-story-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/qilu_story?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: YOUR_DB_PASSWORD_HERE   # 替换为你的数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+  web:
+    cors:
+      allowed-origins: http://localhost:8080,http://localhost:5173,http://127.0.0.1:8080,http://127.0.0.1:5173
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: '*'
+      allow-credentials: true
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.qilu.story.entity
+
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+jwt:
+  secret: YOUR_JWT_SECRET_AT_LEAST_32_CHARS   # 替换为你的 JWT 密钥
+  expiration: 604800000
+
+deepseek:
+  api-key: YOUR_DEEPSEEK_API_KEY   # 替换为你的 DeepSeek API Key
+  api-url: https://api.deepseek.com/v1/chat/completions
+  model: deepseek-chat
+  max-tokens: 1000
+  temperature: 0.7
+
+logging:
+  level:
+    root: INFO
+    com.qilu.story: DEBUG
