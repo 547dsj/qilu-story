@@ -16,27 +16,36 @@
 
 ## 项目结构
 
-```
 qilu-story/
-├── qilu_story_init.sql              # 数据库初始化脚本
-├── qilu-story-backend/              # Spring Boot 后端项目
+├── qilu_story_init.sql
+├── README.md
+├── qilu-story-backend/
 │   ├── pom.xml
-│   ├── README.md
-│   ├── .gitignore
-│   └── src/main/
-│       ├── java/com/qilu/story/
-│       └── resources/
-└── qilu-story-frontend/             # Vue 3 前端项目
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/com/qilu/story/
+│   │       │   ├── controller/
+│   │       │   ├── service/
+│   │       │   ├── mapper/
+│   │       │   ├── entity/
+│   │       │   ├── dto/
+│   │       │   ├── config/
+│   │       │   ├── filter/
+│   │       │   ├── exception/
+│   │       │   └── utils/
+│   │       └── resources/
+│   │           └── application.yml.example
+│   └── .gitignore
+└── qilu-story-frontend/
     ├── package.json
     ├── vite.config.js
     ├── index.html
     └── src/
-        ├── api/                     # API 接口封装
-        ├── assets/                  # 静态资源
-        ├── router/                  # 路由配置
-        ├── store/                   # Pinia 状态管理
-        └── views/                   # 页面组件
-```
+        ├── api/
+        ├── assets/
+        ├── router/
+        ├── store/
+        └── views/
 
 ## 快速开始
 
