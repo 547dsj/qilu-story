@@ -34,50 +34,48 @@
 
 ## 项目结构
 
-```
 qilu-story-backend/
-├── pom.xml                          # Maven 配置
-├── src/
-│   ├── main/
-│   │   ├── java/com/qilu/story/
-│   │   │   ├── QiluStoryApplication.java      # 应用启动类
-│   │   │   ├── controller/                     # 控制层
-│   │   │   │   ├── AuthController.java        # 认证 API
-│   │   │   │   └── StoryController.java       # 故事 API
-│   │   │   ├── service/                        # 业务逻辑层
-│   │   │   │   ├── UserService.java           # 用户服务
-│   │   │   │   ├── StoryService.java          # 故事服务
-│   │   │   │   └── DeepseekService.java       # AI 服务
-│   │   │   ├── mapper/                         # 数据访问层
-│   │   │   │   ├── UserMapper.java
-│   │   │   │   ├── StoryMapper.java
-│   │   │   │   └── StoryNodeMapper.java
-│   │   │   ├── entity/                         # 实体类
-│   │   │   │   ├── User.java
-│   │   │   │   ├── Story.java
-│   │   │   │   └── StoryNode.java
-│   │   │   ├── dto/                            # 数据传输对象
-│   │   │   │   ├── RegisterRequest.java
-│   │   │   │   ├── LoginRequest.java
-│   │   │   │   ├── LoginResponse.java
-│   │   │   │   ├── CreateStoryRequest.java
-│   │   │   │   └── DeepseekResponse.java
-│   │   │   ├── config/                         # 配置类
-│   │   │   │   ├── WebConfig.java
-│   │   │   │   └── FilterConfig.java
-│   │   │   ├── filter/                         # 过滤器
-│   │   │   │   └── JwtAuthenticationFilter.java
-│   │   │   ├── exception/                      # 异常处理
-│   │   │   │   ├── BusinessException.java
-│   │   │   │   └── GlobalExceptionHandler.java
-│   │   │   └── utils/                          # 工具类
-│   │   │       ├── ApiResponse.java            # 响应格式
-│   │   │       └── JwtUtil.java                # JWT 工具
-│   │   └── resources/
-│   │       └── application.yml                 # 应用配置
-│   └── test/                                    # 测试
-└── README.md
-```
+├── pom.xml
+├── .gitignore
+├── README.md
+└── src/
+    └── main/
+        ├── java/com/qilu/story/
+        │   ├── QiluStoryApplication.java
+        │   ├── controller/
+        │   │   ├── AuthController.java
+        │   │   └── StoryController.java
+        │   ├── service/
+        │   │   ├── UserService.java
+        │   │   ├── StoryService.java
+        │   │   └── DeepseekService.java
+        │   ├── mapper/
+        │   │   ├── UserMapper.java
+        │   │   ├── StoryMapper.java
+        │   │   └── StoryNodeMapper.java
+        │   ├── entity/
+        │   │   ├── User.java
+        │   │   ├── Story.java
+        │   │   └── StoryNode.java
+        │   ├── dto/
+        │   │   ├── RegisterRequest.java
+        │   │   ├── LoginRequest.java
+        │   │   ├── LoginResponse.java
+        │   │   ├── CreateStoryRequest.java
+        │   │   └── DeepseekResponse.java
+        │   ├── config/
+        │   │   ├── WebConfig.java
+        │   │   └── FilterConfig.java
+        │   ├── filter/
+        │   │   └── JwtAuthenticationFilter.java
+        │   ├── exception/
+        │   │   ├── BusinessException.java
+        │   │   └── GlobalExceptionHandler.java
+        │   └── utils/
+        │       ├── ApiResponse.java
+        │       └── JwtUtil.java
+        └── resources/
+            └── application.yml.example
 
 ## API 文档
 
