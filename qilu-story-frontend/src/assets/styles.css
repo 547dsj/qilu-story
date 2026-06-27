@@ -1,3 +1,9 @@
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 :root {
   color-scheme: light;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -114,4 +120,65 @@ body {
 
 .el-alert {
   border-radius: 16px;
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+/* Minimal global styles — most styling is in App.vue and component scoped styles */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a0a0a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+/* Scrollbar styling for book pages */
+.book-page-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.book-page-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.book-page-content::-webkit-scrollbar-thumb {
+  background: rgba(150, 120, 90, 0.25);
+  border-radius: 10px;
+}
+
+.book-page-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 120, 90, 0.4);
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }

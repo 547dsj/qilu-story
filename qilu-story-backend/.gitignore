@@ -1,16 +1,15 @@
-# Compiled class file
+﻿# ============================================
+# 🔐 敏感配置文件（严禁提交到仓库）
+# ============================================
+src/main/resources/application.yml
+application*.yml
+!application.yml.example
+
+# ============================================
+# 编译产物
+# ============================================
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+target/
 *.jar
 *.war
 *.nar
@@ -19,20 +18,14 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs
-hs_err_pid*
+# ============================================
+# 日志
+# ============================================
+*.log
 
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-*.iml
-
+# ============================================
 # Maven
-target/
+# ============================================
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -41,21 +34,45 @@ release.properties
 dependency-reduced-pom.xml
 .flattened-pom.xml
 
+# ============================================
 # Gradle
+# ============================================
 .gradle/
 build/
 
-# Node
-node_modules/
-npm-debug.log
-yarn-error.log
+# ============================================
+# IDE / 编辑器
+# ============================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+.project
+.classpath
+.settings/
 
-# Environment
+# ============================================
+# 操作系统
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# 环境变量
+# ============================================
 .env
 .env.local
+.env.*.local
 
-# Database
+# ============================================
+# 数据库文件
+# ============================================
 *.db
 *.sqlite
 
-src/main/resources/application.yml
+# ============================================
+# JVM 崩溃日志
+# ============================================
+hs_err_pid*

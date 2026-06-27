@@ -1,7 +1,7 @@
 <template>
   <div class="book-page-content">
-    <h2 class="page-title">歧路·互动小说</h2>
-    <p class="page-desc">在命运的分叉路口，做出你的选择。</p>
+    <h2 class="page-title">注册账号</h2>
+    <p class="page-desc">创建你的歧路之旅</p>
 
     <el-form
       ref="formRef"
@@ -9,32 +9,38 @@
       :rules="rules"
       label-position="top"
       size="large"
+      class="form-card"
+      @submit.prevent
     >
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" placeholder="请输入用户名" />
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" @keyup.enter="onSubmit" />
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" />
+      </el-form-item>
+
+      <el-form-item label="昵称" prop="nickname">
+        <el-input v-model="form.nickname" placeholder="请输入昵称" />
       </el-form-item>
 
       <el-button type="primary" :loading="loading" @click="onSubmit" class="full-width">
-        登录
+        注册并登录
       </el-button>
     </el-form>
 
     <div class="page-link">
-      <span>还没有账号？</span>
-      <el-button type="text" @click="goRegister">去注册</el-button>
+      <span>已有账号？</span>
+      <el-button type="text" @click="goLogin">返回登录</el-button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '../store/user';
-import { login } from '../api';
+import { login, registerUser } from '../api';
 import { useBook } from '../composables/useBook';
 
 const book = useBook();
@@ -44,16 +50,21 @@ const loading = ref(false);
 
 const form = reactive({
   username: '',
-  password: ''
+  password: '',
+  nickname: ''
 });
 
 const rules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '密码至少6位', trigger: 'blur' }
+  ],
+  nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
 };
 
-const goRegister = () => {
-  book.flipForward('register');
+const goLogin = () => {
+  book.flipBackward();
 };
 
 const onSubmit = () => {
@@ -61,15 +72,15 @@ const onSubmit = () => {
     if (!valid) return;
     loading.value = true;
     try {
-      const data = await login({
+      await registerUser({
         username: form.username,
-        password: form.password
+        password: form.password,
+        nickname: form.nickname
       });
-      store.setAuth(data.token, data.userInfo);
-      ElMessage.success('登录成功');
-      book.flipForward('home');
+      ElMessage.success('注册成功，请登录');
+      book.flipBackward();
     } catch (error) {
-      ElMessage.error(error?.message || '登录失败，请稍后重试');
+      ElMessage.error(error?.message || '注册失败，请稍后重试');
     } finally {
       loading.value = false;
     }
@@ -79,10 +90,10 @@ const onSubmit = () => {
 
 <style scoped>
 .book-page-content {
-  padding: 28px 24px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   height: 100%;
   overflow-y: auto;
 }
@@ -107,6 +118,7 @@ const onSubmit = () => {
 }
 
 .page-link {
+  margin-top: 4px;
   text-align: center;
   color: #7a5b44;
   font-size: 0.9rem;

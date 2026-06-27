@@ -25,7 +25,7 @@ public class StoryController {
     private StoryService storyService;
 
     /**
-     * 创建故事（异步生成分支，立即返回ID）
+     * 创建故事（异步生成分支，立即返回ID�?
      */
     @PostMapping
 public ApiResponse<Long> createStory(@RequestBody CreateStoryRequest request, HttpServletRequest httpRequest) {
@@ -35,30 +35,30 @@ public ApiResponse<Long> createStory(@RequestBody CreateStoryRequest request, Ht
     // 同步创建空白故事
     Long storyId = storyService.createStorySync(request.getTitle(), request.getOpening(), userId);
     
-    // 同步生成分支（会等待完成）
-    storyService.generateBranchesSync(storyId, request.getOpening());
+    // 同步生成分支（会等待完成�?
+    storyService.generateBranchesAsync(storyId, request.getOpening());
     
     return ApiResponse.success("故事创建成功", storyId);
 }
 
     /**
-     * 获取故事根节点
+     * 获取故事根节�?
      */
     @GetMapping("/{storyId}/start")
     public ApiResponse<StoryNode> getStoryStart(@PathVariable Long storyId) {
-        log.info("获取故事根节点: storyId={}", storyId);
+        log.info("获取故事根节�? storyId={}", storyId);
         StoryNode rootNode = storyService.getStoryRoot(storyId);
         return ApiResponse.success("获取成功", rootNode);
     }
 
     /**
-     * 获取下一个节点
+     * 获取下一个节�?
      */
     @GetMapping("/{storyId}/nodes/{nodeId}/next")
     public ApiResponse<StoryNode> getNextNode(@PathVariable Long storyId, 
                                               @PathVariable Long nodeId,
                                               @RequestParam String choice) {
-        log.info("获取下一个节点: storyId={}, nodeId={}, choice={}", storyId, nodeId, choice);
+        log.info("获取下一个节�? storyId={}, nodeId={}, choice={}", storyId, nodeId, choice);
         StoryNode nextNode = storyService.getNextNode(nodeId, choice);
         return ApiResponse.success("获取成功", nextNode);
     }
@@ -74,7 +74,7 @@ public ApiResponse<Long> createStory(@RequestBody CreateStoryRequest request, Ht
     }
 
     /**
-     * 获取当前用户的所有故事
+     * 获取当前用户的所有故�?
      */
     @GetMapping("/my-stories")
     public ApiResponse<List<Story>> getMyStories(HttpServletRequest httpRequest) {
@@ -98,7 +98,7 @@ public ApiResponse<Long> createStory(@RequestBody CreateStoryRequest request, Ht
      */
     @GetMapping("/{storyId}/ready")
     public ApiResponse<Boolean> isStoryReady(@PathVariable Long storyId) {
-        log.info("检查故事生成状态: storyId={}", storyId);
+        log.info("检查故事生成状�? storyId={}", storyId);
         boolean ready = storyService.isStoryReady(storyId);
         return ApiResponse.success("获取成功", ready);
     }

@@ -1,86 +1,90 @@
 <template>
-  <div class="page-shell">
-    <el-card class="panel">
-      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;">
-        <div>
-          <h2 class="panel-title">故事阅读</h2>
-          <p class="text-warm" v-if="node && !generating">当前章节：{{ node.id }}</p>
-        </div>
-        <el-button type="default" @click="goHome">返回首页</el-button>
+  <div class="book-page-content">
+    <div class="story-header">
+      <div>
+        <h2 class="page-title">故事阅读</h2>
+        <p class="page-desc" v-if="node && !generating">当前章节：{{ node.id }}</p>
       </div>
+      <el-button type="default" size="small" @click="goHome">返回主页</el-button>
+    </div>
 
-      <!-- 生成中状态 -->
-      <div v-if="generating" style="text-align: center; padding: 60px;">
-        <div style="font-size: 48px; margin-bottom: 20px;">📖</div>
-        <h3>故事正在生成中...</h3>
-        <p style="color: #8a6c56;">AI 正在为你创作精彩剧情，预计需要 1-2 分钟</p>
-        <p style="color: #8a6c56; font-size: 14px;">请稍候，会自动加载...</p>
-      </div>
+    <!-- Generating status -->
+    <div v-if="generating" class="status-block">
+      <div class="loading-icon">📖</div>
+      <h3>故事正在生成中...</h3>
+      <p>AI 正在为你创作精彩剧情，预计需要 1-2 分钟</p>
+      <p class="sub-text">请稍候，会自动加载...</p>
+    </div>
 
-      <!-- 加载中状态 -->
-      <div v-else-if="loading" style="min-height: 160px; display: flex; align-items: center; justify-content: center; color: #8a6c56;">
-        正在加载故事节点...
-      </div>
+    <!-- Loading -->
+    <div v-else-if="loading" class="status-block">
+      <p>正在加载故事节点...</p>
+    </div>
 
-      <!-- 故事内容 -->
-      <transition name="fade" mode="out-in" v-else-if="node">
-        <div key="story-node" class="story-content">
-          <p style="white-space: pre-wrap; line-height: 1.8; font-size: 16px;">{{ node.content }}</p>
+    <!-- Story content with internal page-flip animation -->
+    <div class="story-body" v-else-if="node">
+      <transition name="story-flip" mode="out-in">
+        <div :key="node.id" class="story-text">
+          <p>{{ node.content }}</p>
         </div>
       </transition>
+    </div>
 
-      <!-- 结局状态 -->
-      <div class="story-status" v-if="node && node.isEnding">
-        这是一个结局。你可以返回首页继续创作另一段故事。
-      </div>
+    <!-- Ending status -->
+    <div class="ending-hint" v-if="node && node.isEnding">
+      这是一个结局。你可以返回主页继续创作另一段故事。
+    </div>
 
-      <!-- 选项按钮 -->
-      <div class="story-footer" v-if="node && !node.isEnding && !generating">
-        <el-button
-          type="primary"
-          :disabled="loading || selectedChoice !== null"
-          @click="choose('A')"
-        >
-          {{ node.optionALabel || '选项A' }}
-        </el-button>
-        <el-button
-          type="default"
-          :disabled="loading || selectedChoice !== null"
-          @click="choose('B')"
-        >
-          {{ node.optionBLabel || '选项B' }}
-        </el-button>
-      </div>
-    </el-card>
+    <!-- Choice buttons -->
+    <div class="choice-row" v-if="node && !node.isEnding && !generating">
+      <el-button
+        type="primary"
+        :disabled="loading || choiceLocked"
+        @click="choose('A')"
+      >
+        {{ node.optionALabel || '选项A' }}
+      </el-button>
+      <el-button
+        type="default"
+        :disabled="loading || choiceLocked"
+        @click="choose('B')"
+      >
+        {{ node.optionBLabel || '选项B' }}
+      </el-button>
+    </div>
+
+    <!-- Ending: return button -->
+    <div class="choice-row" v-if="node && node.isEnding && !generating">
+      <el-button type="primary" @click="goHome">返回主页</el-button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { fetchStartNode, fetchNextNode, checkStoryReady } from '../api';
+import { useBook } from '../composables/useBook';
 
-const route = useRoute();
-const router = useRouter();
+const book = useBook();
 const node = ref(null);
 const loading = ref(false);
 const generating = ref(false);
-const selectedChoice = ref(null);
+const choiceLocked = ref(false);
 let checkInterval = null;
 
-const storyId = route.params.id;
+const storyId = sessionStorage.getItem('qilu_current_story') || '';
+const isGenerating = sessionStorage.getItem('qilu_story_generating') === 'true';
 
-// 检查故事是否生成完成
 const checkReady = async () => {
   try {
     const ready = await checkStoryReady(storyId);
     if (ready) {
-      // 生成完成，停止轮询，加载故事
       if (checkInterval) {
         clearInterval(checkInterval);
         checkInterval = null;
       }
+      sessionStorage.removeItem('qilu_story_generating');
       generating.value = false;
       await loadStartNode();
     }
@@ -93,7 +97,6 @@ const loadStartNode = async () => {
   loading.value = true;
   try {
     node.value = await fetchStartNode(storyId);
-    // 检查根节点是否有选项（有选项说明故事已生成）
     if (node.value && (node.value.optionALabel || node.value.optionBLabel)) {
       generating.value = false;
     }
@@ -105,8 +108,8 @@ const loadStartNode = async () => {
 };
 
 const choose = async (choice) => {
-  if (!node.value || node.value.isEnding) return;
-  selectedChoice.value = choice;
+  if (!node.value || node.value.isEnding || choiceLocked.value) return;
+  choiceLocked.value = true;
   loading.value = true;
   try {
     node.value = await fetchNextNode(storyId, node.value.id, choice);
@@ -114,71 +117,179 @@ const choose = async (choice) => {
     ElMessage.error(error?.message || '跳转失败，请重试');
   } finally {
     loading.value = false;
-    selectedChoice.value = null;
+    choiceLocked.value = false;
   }
 };
 
 const goHome = () => {
-  router.push('/');
+  sessionStorage.removeItem('qilu_current_story');
+  sessionStorage.removeItem('qilu_story_generating');
+  book.flipBackward();
 };
 
 onMounted(async () => {
-  // 检查是否是新建的故事（需要生成）
-  const isGenerating = route.query.generating === 'true';
-  
+  if (!storyId) {
+    ElMessage.warning('未选择故事');
+    book.flipBackward();
+    return;
+  }
+
   if (isGenerating) {
     generating.value = true;
     ElMessage.info('故事正在生成中，请稍候...');
-    // 开始轮询，每2秒检查一次
     checkInterval = setInterval(checkReady, 2000);
-    // 10秒后先尝试加载一次
     setTimeout(async () => {
       if (generating.value) {
         try {
           await loadStartNode();
           if (node.value && (node.value.optionALabel || node.value.optionBLabel)) {
             generating.value = false;
+            sessionStorage.removeItem('qilu_story_generating');
             if (checkInterval) {
               clearInterval(checkInterval);
               checkInterval = null;
             }
           }
-        } catch (e) {
-          // 继续等待
-        }
+        } catch (e) {}
       }
     }, 10000);
   } else {
     await loadStartNode();
   }
 });
+
+onUnmounted(() => {
+  if (checkInterval) {
+    clearInterval(checkInterval);
+    checkInterval = null;
+  }
+});
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.book-page-content {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
 }
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+
+.story-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.story-content {
-  min-height: 200px;
-  padding: 20px 0;
+
+.page-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #4f3827;
+  font-family: 'KaiTi', 'STKaiti', serif;
 }
-.story-status {
+
+.page-desc {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #8a6c56;
+}
+
+.status-block {
   text-align: center;
-  color: #e6a23c;
-  padding: 20px;
-  font-size: 14px;
+  padding: 40px 20px;
+  color: #8a6c56;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.story-footer {
+
+.loading-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.status-block h3 {
+  margin: 0 0 8px;
+  color: #4f3827;
+}
+
+.status-block p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.sub-text {
+  font-size: 0.8rem !important;
+  opacity: 0.7;
+}
+
+.story-body {
+  flex: 1;
+  min-height: 120px;
+  position: relative;
+  perspective: 1200px;
+}
+
+.story-text {
+  white-space: pre-wrap;
+  line-height: 1.9;
+  font-size: 15px;
+  color: #3e2f22;
+  padding: 8px 0;
+}
+
+/* Internal story node flip animation */
+.story-flip-enter-active {
+  animation: story-flip-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left center;
+}
+
+.story-flip-leave-active {
+  animation: story-flip-out 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left center;
+}
+
+@keyframes story-flip-in {
+  0% {
+    transform: rotateY(-30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes story-flip-out {
+  0% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(30deg);
+    opacity: 0;
+  }
+}
+
+.ending-hint {
+  text-align: center;
+  color: #c8855a;
+  padding: 12px 0;
+  font-size: 0.9rem;
+  font-family: 'KaiTi', 'STKaiti', serif;
+}
+
+.choice-row {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(150, 120, 90, 0.12);
+  flex-wrap: wrap;
 }
 </style>
